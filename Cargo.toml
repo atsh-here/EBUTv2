@@ -1,0 +1,45 @@
+[package]
+name = "ebut_storage_integrated"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[features]
+default = ["std"]
+std = ["rand/std", "serde/std"]
+server = ["std", "redis", "tokio", "hex"]
+
+[dependencies]
+blstrs = "0.7"
+ff = "0.13"
+group = "0.13"
+pairing = "0.23"
+sha2 = "0.10"
+rand_core = "0.6"
+rand = "0.8"
+rand_chacha = "0.3"
+serde = { version = "1", features = ["derive"], default-features = false }
+hex = { version = "0.4", features = ["serde"], optional = true }
+rayon = "1"
+curve25519-dalek-ng = { version = "4.1.1", features = ["serde"] }
+bulletproofs = "4"
+merlin = "3"
+num-bigint = "0.4"
+bincode = "1"
+redis = { version = "0.24", features = ["tokio-comp"], optional = true }
+tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"], optional = true }
+
+[dev-dependencies]
+hex = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"] }
+
+
+# Crypto-heavy tests are extremely slow at opt-level 0.  This keeps debug-ish
+# builds but compiles the test profile with enough optimization for Bulletproofs,
+# BLS pairings, and Ristretto operations to finish quickly on a desktop.
+[profile.test]
+opt-level = 2
+debug = 1
+
+[profile.dev.package."*"]
+opt-level = 2
