@@ -33,7 +33,10 @@ fn rev_range_bits(diff1: u64, diff2: u64) -> usize {
 }
 
 fn rev_pc_gens() -> &'static PedersenGens {
-    REV_PC_GENS.get_or_init(PedersenGens::default)
+    REV_PC_GENS.get_or_init(|| PedersenGens {
+        B: ristretto_gv(),
+        B_blinding: ristretto_g1(),
+    })
 }
 
 
